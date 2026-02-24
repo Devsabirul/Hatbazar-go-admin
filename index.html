@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hatbazar Go — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===========================
+     LOGIN SCREEN
+     =========================== -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-bg">
+    <div class="login-orb login-orb-1"></div>
+    <div class="login-orb login-orb-2"></div>
+    <div class="login-orb login-orb-3"></div>
+  </div>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L3 7v10l9 5 9-5V7L12 2z" fill="white" opacity="0.9"/>
+          <path d="M12 2v20M3 7l9 5 9-5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <div>
+        <div class="login-brand">Hatbazar <span>Go</span></div>
+        <div class="login-role">Admin Portal</div>
+      </div>
+    </div>
+    <h2 class="login-title">Welcome back</h2>
+    <p class="login-subtitle">Sign in with your admin credentials to continue.</p>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="loginEmail" class="form-input" placeholder="admin@hatbazargo.com" />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" />
+        <button class="input-toggle" id="togglePass" type="button">
+          <svg id="eyeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="loginError" class="login-error hidden"></div>
+    <button class="btn btn-primary btn-full" id="loginBtn">
+      <span id="loginBtnText">Sign In</span>
+      <div id="loginSpinner" class="spinner hidden"></div>
+    </button>
+    <p class="login-note">Only accounts with admin role may access this panel.</p>
+  </div>
+</div>
+
+<!-- ===========================
+     DASHBOARD APP
+     =========================== -->
+<div id="app" class="app hidden">
+
+  <!-- Sidebar Overlay Mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L3 7v10l9 5 9-5V7L12 2z" fill="white"/>
+          <path d="M12 2v20M3 7l9 5 9-5" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-name">Hatbazar</span><span class="logo-go">Go</span>
+      </div>
+      <button class="sidebar-close" id="sidebarClose">✕</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">Main</div>
+      <a class="nav-item active" data-page="dashboard">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+      <a class="nav-item" data-page="orders">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        <span>Orders</span>
+        <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
+      </a>
+      <a class="nav-item" data-page="riders">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="4"/><path d="M5 20v-1a7 7 0 0114 0v1"/>
+        </svg>
+        <span>Riders</span>
+      </a>
+      <a class="nav-item" data-page="stores">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/>
+        </svg>
+        <span>Stores</span>
+      </a>
+      <a class="nav-item" data-page="products">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+        </svg>
+        <span>Products</span>
+      </a>
+      <a class="nav-item" data-page="users">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+        <span>Users</span>
+      </a>
+
+      <div class="nav-section">Settings</div>
+      <a class="nav-item" data-page="payments">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        <span>Payment Settings</span>
+      </a>
+      <a class="nav-item" data-page="delivery">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="3" width="15" height="13" rx="1"/>
+          <path d="M16 8h4l3 5v3h-7V8zM5.5 21a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM18.5 21a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+        </svg>
+        <span>Delivery Fee</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-ava" id="userAva">AD</div>
+        <div class="user-info">
+          <span class="user-name" id="userName">Admin</span>
+          <span class="user-email" id="userEmail">Loading...</span>
+        </div>
+      </div>
+      <button class="logout-btn" id="logoutBtn" title="Sign out">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburger">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <span class="topbar-title" id="topbarTitle">Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <div class="live-indicator">
+          <span class="live-dot"></span>
+          <span>Live</span>
+        </div>
+        <div class="topbar-avatar" id="topbarAva">AD</div>
+      </div>
+    </header>
+
+    <!-- PAGES -->
+    <div class="page-wrap">
+
+      <!-- DASHBOARD -->
+      <section class="page active" id="page-dashboard">
+        <div class="page-head">
+          <h1 class="page-title">Overview</h1>
+          <p class="page-sub">Real-time statistics from Firestore.</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-label">Total Orders</div>
+              <div class="stat-val" id="statOrders"><span class="pulse-dot"></span></div>
+              <div class="stat-hint">All time</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-label">Total Revenue</div>
+              <div class="stat-val" id="statRevenue"><span class="pulse-dot"></span></div>
+              <div class="stat-hint">Paid orders only</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-orange">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 20v-1a7 7 0 0114 0v1"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-label">Total Riders</div>
+              <div class="stat-val" id="statRiders"><span class="pulse-dot"></span></div>
+              <div class="stat-hint">Role: rider</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-label">Total Stores</div>
+              <div class="stat-val" id="statStores"><span class="pulse-dot"></span></div>
+              <div class="stat-hint">Role: store_admin</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-20">
+          <div class="card-head">
+            <h3 class="card-title">Recent Orders</h3>
+            <button class="btn btn-sm btn-ghost" onclick="navigateTo('orders')">View All →</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>Order ID</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th>
+              </tr></thead>
+              <tbody id="recentOrdersBody">
+                <tr><td colspan="6" class="td-loading"><div class="spinner-sm"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ORDERS -->
+      <section class="page" id="page-orders">
+        <div class="page-head">
+          <h1 class="page-title">Orders Management</h1>
+          <p class="page-sub">Live order tracking and management.</p>
+        </div>
+        <div class="card">
+          <div class="card-head flex-wrap-gap">
+            <div class="filter-tabs" id="orderFilterTabs">
+              <button class="filter-tab active" data-val="all">All</button>
+              <button class="filter-tab" data-val="pending">Pending</button>
+              <button class="filter-tab" data-val="preparing">Preparing</button>
+              <button class="filter-tab" data-val="ready">Ready</button>
+              <button class="filter-tab" data-val="delivered">Delivered</button>
+              <button class="filter-tab" data-val="cancelled">Cancelled</button>
+            </div>
+            <input type="text" class="search-box" id="orderSearch" placeholder="Search by ID or name..." />
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>Order ID</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="ordersTableBody">
+                <tr><td colspan="7" class="td-loading"><div class="spinner-sm"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIDERS -->
+      <section class="page" id="page-riders">
+        <div class="page-head">
+          <h1 class="page-title">Riders Management</h1>
+          <p class="page-sub">Manage your delivery fleet.</p>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <input type="text" class="search-box" id="riderSearch" placeholder="Search riders..." />
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>Rider</th><th>Phone</th><th>Address</th><th>Status</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="ridersTableBody">
+                <tr><td colspan="5" class="td-loading"><div class="spinner-sm"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- STORES -->
+      <section class="page" id="page-stores">
+        <div class="page-head">
+          <h1 class="page-title">Stores Management</h1>
+          <p class="page-sub">Partner restaurants and shops.</p>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <input type="text" class="search-box" id="storeSearch" placeholder="Search stores..." />
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>Store Name</th><th>Owner</th><th>Phone</th><th>Store Address</th><th>Status</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="storesTableBody">
+                <tr><td colspan="6" class="td-loading"><div class="spinner-sm"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRODUCTS -->
+      <section class="page" id="page-products">
+        <div class="page-head">
+          <h1 class="page-title">Products Management</h1>
+          <p class="page-sub">All menu items across all stores.</p>
+          <button class="btn btn-primary" id="addProductBtn">+ Add Product</button>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <input type="text" class="search-box" id="productSearch" placeholder="Search products..." />
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>Image</th><th>Name</th><th>Description</th><th>Price</th><th>Store</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="productsTableBody">
+                <tr><td colspan="6" class="td-loading"><div class="spinner-sm"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- USERS -->
+      <section class="page" id="page-users">
+        <div class="page-head">
+          <h1 class="page-title">Users Management</h1>
+          <p class="page-sub">Registered customers on the platform.</p>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <input type="text" class="search-box" id="userSearch" placeholder="Search users..." />
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>Name</th><th>Phone</th><th>Address</th><th>Status</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="usersTableBody">
+                <tr><td colspan="5" class="td-loading"><div class="spinner-sm"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAYMENTS -->
+      <section class="page" id="page-payments">
+        <div class="page-head">
+          <h1 class="page-title">Payment Settings</h1>
+          <p class="page-sub">Configure mobile banking gateway numbers.</p>
+        </div>
+        <div class="settings-row">
+          <div class="card settings-card">
+            <div class="card-head">
+              <h3 class="card-title">bKash</h3>
+              <span class="badge badge-active">Active</span>
+            </div>
+            <div class="payment-brand bkash-brand">bKash</div>
+            <div class="form-group">
+              <label>Merchant Number</label>
+              <input type="text" id="bkashNumber" class="form-input" placeholder="01XXXXXXXXX" />
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="saveBkash">Save bKash</button>
+            </div>
+          </div>
+          <div class="card settings-card">
+            <div class="card-head">
+              <h3 class="card-title">Nagad</h3>
+              <span class="badge badge-active">Active</span>
+            </div>
+            <div class="payment-brand nagad-brand">Nagad</div>
+            <div class="form-group">
+              <label>Merchant Number</label>
+              <input type="text" id="nagadNumber" class="form-input" placeholder="01XXXXXXXXX" />
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="saveNagad">Save Nagad</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DELIVERY FEE -->
+      <section class="page" id="page-delivery">
+        <div class="page-head">
+          <h1 class="page-title">Delivery Fee Settings</h1>
+          <p class="page-sub">Set the platform-wide default delivery fee.</p>
+        </div>
+        <div class="card settings-card-solo">
+          <div class="card-head">
+            <h3 class="card-title">Default Delivery Fee</h3>
+          </div>
+          <div class="fee-wrap">
+            <div class="fee-symbol">৳</div>
+            <div class="form-group" style="flex:1">
+              <label>Fee Amount (BDT)</label>
+              <input type="number" id="deliveryFeeInput" class="form-input fee-input" placeholder="e.g. 30" min="0" />
+            </div>
+          </div>
+          <p class="settings-note">Applied as default delivery charge for all new orders.</p>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="saveDeliveryFee">Save Delivery Fee</button>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- end page-wrap -->
+  </main>
+</div><!-- end app -->
+
+<!-- ===========================
+     MODALS
+     =========================== -->
+
+<!-- Order Detail Modal -->
+<div class="modal-overlay" id="orderModalOverlay">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title" id="orderModalTitle">Order Details</h3>
+      <button class="modal-close" data-close="orderModalOverlay">✕</button>
+    </div>
+    <div class="modal-body" id="orderModalBody"></div>
+  </div>
+</div>
+
+<!-- Rider Detail Modal -->
+<div class="modal-overlay" id="riderModalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Rider Details</h3>
+      <button class="modal-close" data-close="riderModalOverlay">✕</button>
+    </div>
+    <div class="modal-body" id="riderModalBody"></div>
+  </div>
+</div>
+
+<!-- Store Detail Modal -->
+<div class="modal-overlay" id="storeModalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Store Details</h3>
+      <button class="modal-close" data-close="storeModalOverlay">✕</button>
+    </div>
+    <div class="modal-body" id="storeModalBody"></div>
+  </div>
+</div>
+
+<!-- Product Add/Edit Modal -->
+<div class="modal-overlay" id="productModalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="productModalTitle">Add Product</h3>
+      <button class="modal-close" data-close="productModalOverlay">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="productDocId" />
+      <div class="form-group">
+        <label>Product Name *</label>
+        <input type="text" id="pdName" class="form-input" placeholder="e.g. Kacchi Biryani" />
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="pdDesc" class="form-input form-textarea" placeholder="Short description..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="flex:1">
+          <label>Price (৳) *</label>
+          <input type="number" id="pdPrice" class="form-input" placeholder="350" min="0" />
+        </div>
+        <div class="form-group" style="flex:1">
+          <label>Store ID *</label>
+          <input type="text" id="pdStoreId" class="form-input" placeholder="Store doc ID" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Image URL</label>
+        <input type="text" id="pdImage" class="form-input" placeholder="https://..." />
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" data-close="productModalOverlay">Cancel</button>
+        <button class="btn btn-primary" id="saveProductBtn">Save Product</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmOverlay">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3 class="modal-title" id="confirmTitle">Confirm Action</h3>
+      <button class="modal-close" data-close="confirmOverlay">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmMessage" class="confirm-msg"></p>
+      <div class="form-actions mt-16">
+        <button class="btn btn-ghost" data-close="confirmOverlay">Cancel</button>
+        <button class="btn btn-danger" id="confirmActionBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST Container -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- Firebase v9 Modular SDK -->
+<script type="module" src="script.js"></script>
+</body>
+</html>
