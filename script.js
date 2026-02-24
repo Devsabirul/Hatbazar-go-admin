@@ -1,3 +1,5 @@
+
+alert("ff");
 /**
  * ================================================================
  *  HATBAZAR GO — FIREBASE ADMIN DASHBOARD — script.js
@@ -98,11 +100,13 @@ function listenAuth() {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       // Check if user has admin role in Firestore
+      alert("44");
       try {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (userDoc.exists() && userDoc.data().role === 'admin') {
           currentUser = { uid: user.uid, email: user.email, ...userDoc.data() };
           showApp();
+          alert("4)";
         } else {
           // Not an admin — sign out and show error
           await signOut(auth);
